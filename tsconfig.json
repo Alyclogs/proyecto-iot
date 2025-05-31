@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "commonjs",
-    "lib": ["es2020"],
-    "strict": true,
+    "module": "CommonJS",
+    "outDir": "./api",               // ✅ Compila a la carpeta que Vercel espera
+    "rootDir": "./server/src",       // ✅ De dónde tomar los archivos fuente
     "esModuleInterop": true,
-    "skipLibCheck": true,
+    "strict": true,
     "moduleResolution": "node",
-    "forceConsistentCasingInFileNames": true,
-    "outDir": "dist"
+    "resolveJsonModule": true,
+    "types": ["node"]
   },
-  "include": ["api/**/*.ts"]
+  "include": ["server/src"]
 }

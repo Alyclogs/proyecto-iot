@@ -7,7 +7,7 @@ mqttClient.on('connect', () => {
   console.log('Conectado al broker MQTT');
 });
 
-mqttClient.on('error', (err) => {
+mqttClient.on('error', (err: Error) => {
   console.error('Error de conexión al broker MQTT:', err);
 });
 
