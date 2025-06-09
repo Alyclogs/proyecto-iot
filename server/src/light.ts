@@ -14,10 +14,20 @@ mqttClient.on('error', (err: Error) => {
 export default function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'POST') {
     const { state } = req.body;
-    console.log(`Luz: ${state ? 'Encendida' : 'Apagada'}`);
-    // Aquí publicarías al broker MQTT si quisieras
-    return res.status(200).json({ message: `Luz ${state ? 'on' : 'off'}` });
-  }
+    const topic = 'iot/karen/luz';
+    const message = state ? 'on' : 'off';
 
-  res.status(405).json({ error: 'Método no permitido' });
+    console.log(`Luz: ${state ? 'Encendida' : 'Apagada'}`);
+
+    mqttClient.publish(topic, message, (err: Error) => {
+      if (err) {
+        console.error('Error publicando en MQTT:', err);
+        return res.status(500).json({ error: 'Error al publicar en MQTT' });
+      }
+      console.log(`Publicado en ${topic}: ${message}`);
+      return res.status(200).json({ message: `Luz ${message}` });
+    });
+  } else {
+    res.status(405).json({ error: 'Método no permitido' });
+  }
 }
