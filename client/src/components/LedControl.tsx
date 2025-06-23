@@ -35,7 +35,7 @@ interface CommandResponse {
 }
 const sendLedCommand = async (state: boolean): Promise<CommandResponse> => {
   try {
-    const response = await fetch("/api/light.ts", {
+    const response = await fetch("/api/src/light", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
