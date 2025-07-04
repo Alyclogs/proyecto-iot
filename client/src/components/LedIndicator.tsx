@@ -1,4 +1,5 @@
 import React from "react";
+import lightbulb from "../assets/lightbulb.png";
 
 interface LedIndicatorProps {
   isOn: boolean;
@@ -7,7 +8,7 @@ interface LedIndicatorProps {
 const LedIndicator: React.FC<LedIndicatorProps> = ({ isOn }) => {
   return (
     <img
-      src="/src/assets/lightbulb.png"
+      src={lightbulb}
       alt="Indicador LED"
       style={{
         width: "280px",
