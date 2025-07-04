@@ -79,19 +79,15 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const fetchHorarios = async () => {
-      try {
-        const response = await fetch("/api/schedule");
-        const data = await response.json();
-        setHorarios(data);
-      } catch (error) {
-        console.error("Error fetching horarios:", error);
-      }
-    };
-
-    fetchHorarios();
-  }, []);
+  const fetchHorarios = async () => {
+    try {
+      const response = await fetch("/api/schedule");
+      const data = await response.json();
+      setHorarios(data);
+    } catch (error) {
+      console.error("Error fetching horarios:", error);
+    }
+  };
 
   const toggleDia = (dia: string) => {
     console.log("Dia seleccionado: ", dia);
@@ -126,6 +122,7 @@ function App() {
 
       if (response.ok) {
         alert("Horario guardado exitosamente.");
+        fetchHorarios();
       } else {
         alert("Error al guardar el horario.");
       }
