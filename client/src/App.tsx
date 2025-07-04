@@ -89,6 +89,10 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    fetchHorarios();
+  }, []);
+
   const toggleDia = (dia: string) => {
     console.log("Dia seleccionado: ", dia);
     setDiasSeleccionados((prev) =>
