@@ -27,3 +27,5 @@ export const publicarEstadoLuz = (state: boolean): Promise<void> => {
         });
     });
 };
+
+export default mqttClient;

@@ -10,6 +10,8 @@ function App() {
   const [horaFin, setHoraFin] = useState("");
   const [diasSeleccionados, setDiasSeleccionados] = useState<string[]>([]);
   const [horarios, setHorarios] = useState<any[]>([]);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const diasDeLaSemana = [
     { nombre: "lunes", label: "lun" },
@@ -67,23 +69,30 @@ function App() {
   );
 
   useEffect(() => {
-    const handleConnectionStatus = (status: boolean) => {
-      setIsConnected(status);
+    const checkMQTTConnection = async () => {
+      try {
+        const res = await fetch("/api/mqtt-status");
+        const data = await res.json();
+        setIsConnected(data.connected);
+      } catch (error) {
+        console.error("Error verificando conexión MQTT:", error);
+        setIsConnected(false);
+      }
     };
 
-    // Simulate connection status change
-    const interval = setInterval(() => {
-      handleConnectionStatus(Math.random() > 0.1);
-    }, 5000);
+    checkMQTTConnection();
+    const interval = setInterval(checkMQTTConnection, 5000);
 
     return () => clearInterval(interval);
   }, []);
 
   const fetchHorarios = async () => {
+    setIsLoading(true);
     try {
       const response = await fetch("/api/schedule");
       const data = await response.json();
       setHorarios(data);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching horarios:", error);
     }
@@ -101,8 +110,7 @@ function App() {
         console.error("Error al verificar LED:", err);
       }
     };
-
-    const interval = setInterval(checkLedSchedule, 60 * 1000); // cada minuto
+    const interval = setInterval(checkLedSchedule, 60 * 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -123,23 +131,30 @@ function App() {
       alert("Por favor, selecciona al menos un día.");
       return;
     }
+
     const horario = {
       horaInicio,
       horaFin,
       dias: diasSeleccionados,
     };
-    console.log("Horario a guardar: ", horario);
+
     try {
-      const response = await fetch("/api/schedule", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(horario),
-      });
+      const response = await fetch(
+        "/api/schedule" + (editingId ? `?id=${editingId}` : ""),
+        {
+          method: editingId ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(horario),
+        }
+      );
 
       if (response.ok) {
-        alert("Horario guardado exitosamente.");
+        alert(
+          `Horario ${editingId ? "actualizado" : "guardado"} exitosamente.`
+        );
+        limpiarFormulario();
         fetchHorarios();
       } else {
         alert("Error al guardar el horario.");
@@ -150,10 +165,36 @@ function App() {
     }
   };
 
+  const editarHorario = (horario: any) => {
+    setHoraInicio(horario.horaInicio);
+    setHoraFin(horario.horaFin);
+    setDiasSeleccionados(horario.dias);
+    setEditingId(horario._id);
+  };
+
+  const eliminarHorario = async (id: string) => {
+    if (!confirm("¿Estás seguro de que deseas eliminar este horario?")) return;
+    try {
+      const res = await fetch(`/api/schedule?id=${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        fetchHorarios();
+      } else {
+        alert("Error al eliminar el horario.");
+      }
+    } catch (err) {
+      console.error("Error al eliminar:", err);
+      alert("Error al eliminar el horario.");
+    }
+  };
+
   const limpiarFormulario = () => {
     setHoraInicio("");
     setHoraFin("");
     setDiasSeleccionados([]);
+    setEditingId(null);
   };
 
   return (
@@ -182,7 +223,11 @@ function App() {
             <div className="right-content">
               <header className="header">
                 <div></div>
-                <div className="connection-status">
+                <div
+                  className={`connection-status ${
+                    isConnected ? "connected" : "disconnected"
+                  }`}
+                >
                   <div
                     className={`connection-dot ${
                       isConnected ? "connected" : "disconnected"
@@ -198,7 +243,9 @@ function App() {
                 <p className="subtitle">Controla tu smart light with IoT</p>
               </div>
               <section className="new-schedule-section">
-                <h2 className="schedule-title">Nuevo horario</h2>
+                <h2 className="schedule-title">
+                  {editingId ? "Editar horario" : "Nuevo horario"}
+                </h2>
                 <div className="schedule-card" id="nuevoHorarioForm">
                   <div className="form-content">
                     <div className="form-row">
@@ -223,6 +270,7 @@ function App() {
                           className="hora-input"
                           name="hora_inicio"
                           id="hora_inicio"
+                          value={horaInicio}
                           onChange={actualizarHoraInicio}
                         />
                       </div>
@@ -233,6 +281,7 @@ function App() {
                           className="hora-input"
                           name="hora_fin"
                           id="hora_fin"
+                          value={horaFin}
                           onChange={actualizarHoraFin}
                         />
                       </div>
@@ -260,9 +309,13 @@ function App() {
           <section className="schedule-section">
             <h2 className="schedule-title">Próximos horarios</h2>
 
-            {horarios.length > 0 ? (
-              horarios.map((horario, index) => (
-                <div className="schedule-grid">
+            <div className="schedule-grid">
+              {isLoading ? (
+                <div className="loading-indicator">
+                  <div className="spinner"></div>
+                </div>
+              ) : horarios.length > 0 ? (
+                horarios.map((horario, index) => (
                   <div className="schedule-card" key={index}>
                     <p className="schedule-days">{horario.dias.join(", ")}</p>
                     <div className="schedule-times">
@@ -275,12 +328,26 @@ function App() {
                         <div className="time-value">{horario.horaFin}</div>
                       </div>
                     </div>
+                    <div className="form-buttons">
+                      <button
+                        className="control-button btn-prender"
+                        onClick={() => editarHorario(horario)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        className="control-button btn-apagar"
+                        onClick={() => eliminarHorario(horario._id)}
+                      >
+                        Eliminar
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))
-            ) : (
-              <p className="no-schedule">No hay horarios programados.</p>
-            )}
+                ))
+              ) : (
+                <p className="no-schedule">No hay horarios programados.</p>
+              )}
+            </div>
           </section>
         </main>
       </div>
