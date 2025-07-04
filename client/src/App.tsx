@@ -93,6 +93,20 @@ function App() {
     fetchHorarios();
   }, []);
 
+  useEffect(() => {
+    const checkLedSchedule = async () => {
+      try {
+        await fetch("/api/cron/luz", { method: "POST" });
+      } catch (err) {
+        console.error("Error al verificar LED:", err);
+      }
+    };
+
+    const interval = setInterval(checkLedSchedule, 60 * 1000); // cada minuto
+
+    return () => clearInterval(interval);
+  }, []);
+
   const toggleDia = (dia: string) => {
     console.log("Dia seleccionado: ", dia);
     setDiasSeleccionados((prev) =>
