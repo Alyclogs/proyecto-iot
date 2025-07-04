@@ -1,5 +1,6 @@
 import React from "react";
-import lightbulb from "../assets/lightbulb.png";
+import lightbulbOn from "../assets/dark-mode-on.png";
+import lightbulbOff from "../assets/lightbulb.png";
 
 interface LedIndicatorProps {
   isOn: boolean;
@@ -7,18 +8,40 @@ interface LedIndicatorProps {
 
 const LedIndicator: React.FC<LedIndicatorProps> = ({ isOn }) => {
   return (
-    <img
-      src={lightbulb}
-      alt="Indicador LED"
+    <div
       style={{
+        position: "relative",
         width: "280px",
         height: "280px",
-        //borderRadius: "50%",
-        //backgroundColor: isOn ? "#fbbf24" : "#64748b",
-        transition: "all 0.3s ease",
-        boxShadow: isOn ? "0 0 10px rgba(251, 191, 36, 0.8)" : "none",
       }}
-    />
+    >
+      <img
+        src={lightbulbOff}
+        alt="LED apagado"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          opacity: isOn ? 0 : 1,
+          transition: "opacity 0.8s ease",
+        }}
+      />
+      <img
+        src={lightbulbOn}
+        alt="LED encendido"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          opacity: isOn ? 1 : 0,
+          transition: "opacity 0.8s ease",
+        }}
+      />
+    </div>
   );
 };
 

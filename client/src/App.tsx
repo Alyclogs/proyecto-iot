@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import "./App.css";
 import LedIndicator from "./components/LedIndicator";
+import DiaButton from "./components/DiaButton";
 
 function App() {
   const [isLedOn, setIsLedOn] = useState(false);
@@ -9,6 +10,16 @@ function App() {
   const [horaFin, setHoraFin] = useState("");
   const [diasSeleccionados, setDiasSeleccionados] = useState<string[]>([]);
   const [horarios, setHorarios] = useState<any[]>([]);
+
+  const diasDeLaSemana = [
+    { nombre: "lunes", label: "lun" },
+    { nombre: "martes", label: "mar" },
+    { nombre: "miercoles", label: "mie" },
+    { nombre: "jueves", label: "jue" },
+    { nombre: "viernes", label: "vie" },
+    { nombre: "sabado", label: "sab" },
+    { nombre: "domingo", label: "dom" },
+  ];
 
   const toggleLed = async (estado: boolean) => {
     try {
@@ -178,55 +189,15 @@ function App() {
                     <div className="form-row">
                       <p className="form-label">Repetir:</p>
                       <div className="dias-row">
-                        <button
-                          id="btnLunes"
-                          className="circle-dia"
-                          onClick={() => toggleDia("lunes")}
-                        >
-                          lun
-                        </button>
-                        <button
-                          id="btnMartes"
-                          className="circle-dia"
-                          onClick={() => toggleDia("martes")}
-                        >
-                          mar
-                        </button>
-                        <button
-                          id="btnMiercoles"
-                          className="circle-dia"
-                          onClick={() => toggleDia("miercoles")}
-                        >
-                          mie
-                        </button>
-                        <button
-                          id="btnJueves"
-                          className="circle-dia"
-                          onClick={() => toggleDia("jueves")}
-                        >
-                          jue
-                        </button>
-                        <button
-                          id="btnViernes"
-                          className="circle-dia"
-                          onClick={() => toggleDia("viernes")}
-                        >
-                          vie
-                        </button>
-                        <button
-                          id="btnSabado"
-                          className="circle-dia"
-                          onClick={() => toggleDia("sabado")}
-                        >
-                          sab
-                        </button>
-                        <button
-                          id="btnDomingo"
-                          className="circle-dia"
-                          onClick={() => toggleDia("domingo")}
-                        >
-                          dom
-                        </button>
+                        {diasDeLaSemana.map(({ nombre, label }) => (
+                          <DiaButton
+                            key={nombre}
+                            dia={nombre}
+                            label={label}
+                            isSelected={diasSeleccionados.includes(nombre)}
+                            onClick={toggleDia}
+                          />
+                        ))}
                       </div>
                     </div>
                     <div className="form-horarios">
