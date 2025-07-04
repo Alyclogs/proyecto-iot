@@ -1,7 +1,18 @@
 {
-    "functions": {
-        "api/**/*.ts": {
-            "runtime": "@vercel/node@3.0.0"
+    "rewrites": [
+        {
+            "source": "/api/(.*)",
+            "destination": "/api/$1"
         }
-    }
+    ],
+    "builds": [
+        {
+            "src": "client/vite.config.ts",
+            "use": "@vercel/vite"
+        },
+        {
+            "src": "api/**/*.js",
+            "use": "@vercel/node"
+        }
+    ]
 }

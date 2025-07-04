@@ -2,13 +2,13 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "CommonJS",
-    "outDir": "./api",               // ✅ Compila a la carpeta que Vercel espera
-    "rootDir": "./server/src",       // ✅ De dónde tomar los archivos fuente
+    "outDir": "./api",           
+    "rootDir": "./api", 
     "esModuleInterop": true,
     "strict": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "types": ["node"]
   },
-  "include": ["server/src"]
+  "include": ["api"]
 }

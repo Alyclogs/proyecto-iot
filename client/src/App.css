@@ -1,42 +1,462 @@
+/* CSS Variables for easy theme management */
+:root {
+  --primary-bg: #10101a;
+  --secondary-bg: #19192e;
+  --accent-color: #4f46e5;
+  --accent-hover: #4338ca;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --success-color: #22c55e;
+  --warning-color: #f59e0b;
+  --warning-glow: rgba(251, 191, 36, 0.6);
+  --card-bg: rgba(40, 42, 60, 0.5);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --font-family: "Nunito", sans-serif;
+}
+
+/* Keyframes for animations */
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background: linear-gradient(
+    135deg,
+    var(--primary-bg) 0%,
+    var(--secondary-bg) 100%
+  );
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.app {
+  min-height: 100vh;
+  padding: 3rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 3rem;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--success-color);
+}
+
+.connection-dot {
+  width: 10px;
+  height: 10px;
+  background-color: var(--success-color);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+}
+
+.title-section {
+  text-align: start;
+  margin-bottom: 1rem;
+}
+
+.main-title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.025em;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+}
+
+.control-panel {
+  width: 100%;
+  max-width: 620px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: center;
+  gap: 2rem;
+}
+
+.control-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.content-row {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  align-items: flex-start;
+}
+
+.right-content {
+  width: 100%;
+  max-width: 880px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 2rem;
+}
+
+#nuevoHorarioForm {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+  background: var(--card-bg);
   padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid var(--card-border);
+}
+
+.bulb-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #475569 0%, #334155 100%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 1.5rem;
+  transition: all 0.4s ease-in-out;
+  cursor: pointer;
+}
+
+.bulb-icon.active {
+  background: linear-gradient(135deg, #fcd34d 0%, var(--warning-color) 100%);
+  box-shadow: 0 0 40px var(--warning-glow);
+}
+
+.bulb-icon:hover {
+  transform: scale(1.05);
+}
+
+.bulb-icon::before {
+  content: "";
+  width: 30px;
+  height: 20px;
+  background: #64748b;
+  position: absolute;
+  bottom: -15px;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.bulb-icon.active::before {
+  background: #94a3b8;
+}
+
+button {
+  border: none;
+  border-radius: 999px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: inherit;
+  background-color: transparent;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+  transform: translateY(-1px);
+}
+
+.control-button {
+  border: 1px solid var(--card-border);
+}
+
+.control-button.btn-prender {
+  background: var(--accent-color);
+}
+.control-button.btn-prender:hover {
+  background: var(--accent-hover);
+}
+
+.control-button.btn-apagar {
+  background: #374151;
+}
+.control-button.btn-apagar:hover {
+  background: #4b5563;
+}
+
+.new-schedule-section {
+  width: 100%;
+}
+
+.schedule-section {
+  margin-top: 3rem;
+  width: 80%;
+}
+
+.schedule-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+.no-schedule {
+  color: var(--text-secondary);
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.schedule-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 1.5rem;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.schedule-day {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.schedule-times {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+}
+
+.time-slot {
+  flex: 1;
+}
+
+.time-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.time-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.form-dias {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  align-items: center;
+}
+
+.form-horarios {
+  display: flex;
+  gap: 2rem;
+}
+
+.form-label {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.hora-input {
+  background: rgba(0, 0, 0, 0.2);
+  outline: none;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  font-size: 1rem;
+  text-align: center;
+  color: var(--text-primary);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hora-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.4);
+}
+
+.circle-dia {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid var(--card-border) !important;
+  background-color: #374151;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.dias-row {
+  display: flex;
+  gap: 8px;
+}
+
+.circle-dia:hover {
+  background-color: #4b5563;
+  transform: scale(1.1);
+}
+
+.circle-dia.selected {
+  background-color: var(--accent-color);
+  color: var(--text-primary);
+  border-color: var(--accent-hover);
+}
+
+.form-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Responsive Design */
+@media (max-width: 960px) {
+  .app {
+    padding: 2rem;
   }
-  to {
-    transform: rotate(360deg);
+  .content-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+  }
+  #nuevoHorarioForm {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+  }
+  .form-horarios {
+    justify-content: space-around;
+    width: 100%;
+  }
+  .form-buttons {
+    align-self: flex-end;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+@media (max-width: 768px) {
+  .app {
+    padding: 1.5rem;
+  }
+  .main-title {
+    font-size: 2.2rem;
+  }
+  .subtitle {
+    font-size: 1rem;
+  }
+  .form-content {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .form-dias {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+@media (max-width: 480px) {
+  .app {
+    padding: 1rem;
+  }
+  .header {
+    margin-bottom: 2rem;
+  }
+  .main-title {
+    font-size: 1.8rem;
+  }
+  .control-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  .control-buttons button {
+    width: 100%;
+  }
+  .form-horarios {
+    flex-direction: column;
+    align-items: center;
+  }
 }

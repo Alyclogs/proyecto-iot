@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://proyecto-iot-eta.vercel.app:3001',
+        target: 'https://proyecto-iot-ten.vercel.app',
         changeOrigin: true,
         secure: false,
       }

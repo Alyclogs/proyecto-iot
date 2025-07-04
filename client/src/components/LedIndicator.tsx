@@ -1,43 +1,23 @@
 import React from "react";
-import { Box, useTheme } from "@mui/material";
 
 interface LedIndicatorProps {
   isOn: boolean;
 }
 
 const LedIndicator: React.FC<LedIndicatorProps> = ({ isOn }) => {
-  const theme = useTheme();
-
-  const onColor = theme.palette.success.main;
-  const offColor = theme.palette.error.main;
-  const shadowColor = isOn
-    ? theme.palette.success.light
-    : theme.palette.error.light;
-
   return (
-    <Box
-      sx={{
-        width: 60,
-        height: 60,
-        borderRadius: "50%",
-        backgroundColor: isOn ? onColor : offColor,
-        border: `2px solid ${
-          isOn ? theme.palette.success.dark : theme.palette.error.dark
-        }`,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        color: theme.palette.getContrastText(isOn ? onColor : offColor),
-        fontWeight: "bold",
-        fontSize: "0.9rem",
-        boxShadow: `0 0 15px 5px ${shadowColor}`,
-        transition:
-          "background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease",
-        margin: 2,
+    <img
+      src="/src/assets/lightbulb.png"
+      alt="Indicador LED"
+      style={{
+        width: "280px",
+        height: "280px",
+        //borderRadius: "50%",
+        //backgroundColor: isOn ? "#fbbf24" : "#64748b",
+        transition: "all 0.3s ease",
+        boxShadow: isOn ? "0 0 10px rgba(251, 191, 36, 0.8)" : "none",
       }}
-    >
-      {isOn ? "ON" : "OFF"}
-    </Box>
+    />
   );
 };
 
