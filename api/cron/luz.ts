@@ -1,9 +1,14 @@
+import { toZonedTime, format } from "date-fns-tz";
+
+const limaTimezone = "America/Lima";
+const ahoraUTC = new Date();
+const ahora = toZonedTime(ahoraUTC, limaTimezone);
+
 export default async function handler(req: any, res: any) {
     try {
         const response = await fetch(`${process.env.BASE_URL}/api/schedule`);
         const horarios = await response.json();
 
-        const ahora = new Date();
         const minutosActuales = ahora.getHours() * 60 + ahora.getMinutes();
 
         const normalizarDia = (dia: string) =>
