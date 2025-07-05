@@ -1,48 +1,52 @@
-import { toZonedTime, format } from "date-fns-tz";
-
-const limaTimezone = "America/Lima";
-const ahoraUTC = new Date();
-const ahora = toZonedTime(ahoraUTC, limaTimezone);
+import { format } from "date-fns-tz";
 
 export default async function handler(req: any, res: any) {
     try {
+        const limaTimezone = "America/Lima";
+
+        // 🕒 Obtener hora actual como string "HH:mm" en zona horaria Lima
+        const ahoraStr = format(new Date(), "HH:mm", { timeZone: limaTimezone });
+        const [horas, minutos] = ahoraStr.split(":").map(Number);
+        const minutosActuales = horas * 60 + minutos;
+
+        // 📅 Obtener día actual en Lima
+        const diaActual = format(new Date(), "EEEE", { timeZone: limaTimezone })
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase();
+
+        // 🔄 Obtener los horarios desde el backend
         const response = await fetch(`${process.env.BASE_URL}/api/schedule`);
         const horarios = await response.json();
 
-        const minutosActuales = ahora.getHours() * 60 + ahora.getMinutes();
-
-        const normalizarDia = (dia: string) =>
-            dia.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-
-        const diaActual = normalizarDia(
-            ahora.toLocaleDateString("es-ES", { weekday: "long" })
-        );
-
-        console.log("🕒 Hora actual:", ahora.toTimeString().slice(0, 5));
+        console.log("🕒 Hora actual (Lima):", ahoraStr);
         console.log("📅 Día actual:", diaActual);
         console.log("🗓️ Horarios cargados:", horarios);
 
+        // 🔍 Función auxiliar para convertir string "HH:mm" a minutos
         const horaStrToMin = (hora: string) => {
             const [h, m] = hora.split(":").map(Number);
             return h * 60 + m;
         };
 
+        // 🚦 Verificar si se debe encender el LED
         const debeEncender = horarios.some((horario: any) => {
             const inicioMin = horaStrToMin(horario.horaInicio);
             const finMin = horaStrToMin(horario.horaFin);
-            const resultado =
+            const activo =
                 horario.dias.includes(diaActual) &&
                 minutosActuales >= inicioMin &&
                 minutosActuales < finMin;
 
-            console.log(`⏱️ Verificando horario: ${horario.horaInicio} - ${horario.horaFin} (${horario.dias.join(", ")})`);
-            console.log("👉 ¿Corresponde encender?", resultado);
+            console.log(`⏱️ Verificando: ${horario.horaInicio} - ${horario.horaFin} (${horario.dias.join(", ")})`);
+            console.log("👉 ¿Corresponde encender?", activo);
 
-            return resultado;
+            return activo;
         });
 
         console.log("🚦 Resultado final, ¿encender LED?:", debeEncender);
 
+        // 📤 Enviar a la API de luz
         const lightResponse = await fetch(`${process.env.BASE_URL}/api/light`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
