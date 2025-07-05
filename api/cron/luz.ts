@@ -12,7 +12,7 @@ export default async function handler(req: any, res: any) {
         const [horas, minutos] = ahoraStr.split(":").map(Number);
         const minutosActuales = horas * 60 + minutos;
 
-        const diaActual = format(ahora, "EEEE", { timeZone: limaTimezone })
+        const diaActual = ahora.toLocaleDateString("es-PE", { weekday: "long" })
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "")
             .toLowerCase();
