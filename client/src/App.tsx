@@ -105,13 +105,21 @@ function App() {
   useEffect(() => {
     const checkLedSchedule = async () => {
       try {
-        await fetch("/api/cron/luz", { method: "POST" });
+        const res = await fetch("/api/cron/luz", { method: "POST" });
+        const data = await res.json();
+
+        if (res.ok && typeof data.estado === "boolean") {
+          setIsLedOn(data.estado);
+        } else {
+          console.warn("Respuesta inesperada de /api/cron/luz:", data);
+        }
       } catch (err) {
         console.error("Error al verificar LED:", err);
       }
     };
-    const interval = setInterval(checkLedSchedule, 60 * 1000);
+    checkLedSchedule();
 
+    const interval = setInterval(checkLedSchedule, 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 
